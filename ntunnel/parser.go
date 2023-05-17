@@ -4,22 +4,28 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Orlion/hersql/pkg/bytesx"
+	"hersql/pkg/bytesx"
 	"github.com/dolthub/vitess/go/sqltypes"
 	"github.com/dolthub/vitess/go/vt/proto/query"
+	"go.uber.org/zap"
 )
 
 type Parser struct {
-	body io.Reader
+	body 	io.Reader
+	logger  *zap.SugaredLogger
 }
 
-func NewParser(body io.Reader) *Parser {
-	return &Parser{body}
+func NewParser(body io.Reader, logger *zap.SugaredLogger) *Parser {
+	return &Parser{
+		body: body,
+		logger: logger,
+	}
 }
 
 func (r *Parser) Parse() (result *sqltypes.Result, err error) {
 	errno, err := r.parseHeader()
 	if err != nil {
+		r.logger.Errorf("parse header error!")
 		return
 	}
 
@@ -325,11 +331,11 @@ func (r *Parser) parseBlockValueWithFirstByte(b byte) (value []byte, err error) 
 	value = make([]byte, len)
 	n, err := r.body.Read(value)
 	if err != nil {
-		err = fmt.Errorf("Reader.parseBlockValueWithFirstByte read value err:[%w]", err)
+		err = fmt.Errorf("Reader.parseBlockValueWithFirstByte read value err:[%w], value: %s", err, value)
 		return
 	}
 	if n != int(len) {
-		err = fmt.Errorf("Reader.parseBlockValueWithFirstByte read value n:[%d] != [%d]", n, len)
+		err = fmt.Errorf("Reader.parseBlockValueWithFirstByte read value n:[%d] != [%d], value: %s", n, len, value)
 		return
 	}
 

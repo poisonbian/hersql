@@ -3,8 +3,8 @@ package server
 import (
 	"time"
 
-	"github.com/Orlion/hersql/config"
-	"github.com/Orlion/hersql/log"
+	"hersql/config"
+	"hersql/log"
 	"github.com/dolthub/go-mysql-server/auth"
 	"github.com/dolthub/vitess/go/mysql"
 	"go.uber.org/zap"
@@ -18,7 +18,7 @@ type Server struct {
 
 func NewServer(conf *config.Conf) (*Server, error) {
 	logger := log.GetLogger(conf.Log)
-	handler := NewHandler(time.Duration(conf.Server.ConnReadTimeout)*time.Millisecond, conf.NtunnelUrl, logger, NewSessionManager())
+	handler := NewHandler(time.Duration(conf.Server.ConnReadTimeout)*time.Millisecond, conf, logger, NewSessionManager())
 
 	l, err := NewListener(conf.Server.Protocol, conf.Server.Address, handler)
 	if err != nil {

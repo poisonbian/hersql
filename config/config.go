@@ -7,19 +7,19 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-const (
-	DefaultServerProtocol         = "tcp"
-	DefaultServerAddress          = "127.0.0.1:3306"
-	DefaultServerConnReadTimeout  = 5000
-	DefaultServerConnWriteTimeout = 5000
-	DefaultServerMaxConnections   = 10
-	DefaultServerUserName         = "root"
-)
-
 type Conf struct {
-	Server     *Server `yaml:"server"`
-	Log        *Log    `yaml:"log"`
-	NtunnelUrl string  `yaml:"ntunnel_url"`
+	DBInfo     *DBInfo	`yaml:"db_info"`
+	Server     *Server	`yaml:"server"`
+	Log        *Log		`yaml:"log"`
+}
+
+type DBInfo struct {
+	NTunnelUrl		string `yaml:"ntunnel_url"`
+	Host 			string `yaml:"host"`
+	Port			string `yaml:"port"`
+	DataBase 		string `yaml:"database"`
+	User			string `yaml:"user"`
+	Password		string `yaml:"password"`
 }
 
 type Server struct {
@@ -50,42 +50,14 @@ func Parse(filename string) (conf *Conf, err error) {
 		return
 	}
 
-	if conf.NtunnelUrl == "" {
+	if conf.DBInfo.NTunnelUrl == "" {
 		err = errors.New("please specify ntunnel_url in the configuration file")
 		return
-	}
-
-	withDefault(conf)
-
-	return
-}
-
-//fill conf with default values
-func withDefault(conf *Conf) {
-	if conf.Server == nil {
-		conf.Server = new(Server)
-	}
-
-	if conf.Server.Protocol == "" {
-		conf.Server.Protocol = DefaultServerProtocol
-	}
-	if conf.Server.Address == "" {
-		conf.Server.Address = DefaultServerAddress
-	}
-	if conf.Server.ConnReadTimeout == 0 {
-		conf.Server.ConnReadTimeout = DefaultServerConnReadTimeout
-	}
-	if conf.Server.ConnWriteTimeout == 0 {
-		conf.Server.ConnWriteTimeout = DefaultServerConnWriteTimeout
-	}
-	if conf.Server.MaxConnections == 0 {
-		conf.Server.MaxConnections = DefaultServerMaxConnections
-	}
-	if conf.Server.UserName == "" {
-		conf.Server.UserName = DefaultServerUserName
 	}
 
 	if conf.Log == nil {
 		conf.Log = new(Log)
 	}
+	
+	return
 }

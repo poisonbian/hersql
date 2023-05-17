@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Orlion/hersql/ntunnel"
+	"hersql/ntunnel"
 	"github.com/dolthub/vitess/go/mysql"
 	gomysql "github.com/go-sql-driver/mysql"
 )

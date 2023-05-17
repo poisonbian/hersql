@@ -9,9 +9,13 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
+	"io"
+	"io/ioutil"
+	"bytes"
+	
 	"github.com/dolthub/vitess/go/sqltypes"
 	"github.com/go-sql-driver/mysql"
+	"go.uber.org/zap"
 )
 
 type DSN struct {
@@ -52,11 +56,13 @@ func (dsn *DSN) SetDB(db string) {
 
 type Querier struct {
 	ntunnelUrl string
+	logger      *zap.SugaredLogger
 }
 
-func NewQuerier(ntunnelUrl string) *Querier {
+func NewQuerier(ntunnelUrl string, logger *zap.SugaredLogger) *Querier {
 	return &Querier{
 		ntunnelUrl: ntunnelUrl,
+		logger: logger,
 	}
 }
 
@@ -69,22 +75,29 @@ func (qer *Querier) Query(query string, dsn *DSN) (result *sqltypes.Result, err 
 	params.Set("login", dsn.Login)
 	params.Set("password", dsn.Password)
 	params.Set("db", dsn.DB)
-	req, _ := http.NewRequest(http.MethodPost, qer.ntunnelUrl, strings.NewReader(params.Encode()))
+	
+	body := strings.NewReader(params.Encode())
+	req, _ := http.NewRequest("POST", qer.ntunnelUrl, body)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("accept-encoding", "identity")
 	httpClient := &http.Client{
-		Timeout: 5000 * time.Millisecond,
+		Timeout: 20 * time.Second,
 	}
-
+	
 	var resp *http.Response
-	resp, err = httpClient.Do(req)
+	var buf bytes.Buffer
+
+	resp, _ = httpClient.Do(req)
+	tee := io.TeeReader(resp.Body, &buf)
+	
+	body_str, _ := ioutil.ReadAll(tee)
+//	qer.logger.Infof(string(body_str))
+	qer.logger.Infof("length: %d", len(body_str))
+	
+	result, err = NewParser(&buf, qer.logger).Parse()
+
 	if err != nil {
+		qer.logger.Errorf("response parse error!")
 		return
-	} else {
-		result, err = NewParser(resp.Body).Parse()
-		if err != nil {
-			return
-		}
 	}
 
 	return

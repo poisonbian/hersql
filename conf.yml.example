@@ -1,4 +1,10 @@
-ntunnel_url: http://navicat.test.com
+db_info:
+  ntunnel_url: http://test.navicat.com/ntunnel_mysql.php
+  host: xxdb.xx.com
+  port: 3306
+  database: a_default_db
+  user: username
+  password: password
 server: 
   protocol: tcp
   address: 127.0.0.1:63306

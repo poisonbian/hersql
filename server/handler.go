@@ -6,7 +6,8 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/Orlion/hersql/ntunnel"
+	"hersql/config"
+	"hersql/ntunnel"
 	"github.com/dolthub/vitess/go/mysql"
 	"github.com/dolthub/vitess/go/sqltypes"
 	"github.com/dolthub/vitess/go/vt/proto/query"
@@ -21,15 +22,17 @@ type Handler struct {
 	logger      *zap.SugaredLogger
 	qer         *ntunnel.Querier
 	sm          *SessionManager
+	conf		*config.Conf
 }
 
-func NewHandler(readTimeout time.Duration, ntunnelUrl string, logger *zap.SugaredLogger, sm *SessionManager) *Handler {
-	qer := ntunnel.NewQuerier(ntunnelUrl)
+func NewHandler(readTimeout time.Duration, conf *config.Conf, logger *zap.SugaredLogger, sm *SessionManager) *Handler {
+	qer := ntunnel.NewQuerier(conf.DBInfo.NTunnelUrl, logger)
 	return &Handler{
 		readTimeout: readTimeout,
 		logger:      logger,
 		qer:         qer,
 		sm:          sm,
+		conf:		 conf,
 	}
 }
 
@@ -75,6 +78,19 @@ func (h *Handler) ComQuery(
 		}
 	}()
 
+	dsn := h.sm.GetSession(c).GetDSN()
+	if (dsn == nil) {
+		str := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", 
+			h.conf.DBInfo.User, h.conf.DBInfo.Password, 
+			h.conf.DBInfo.Host, h.conf.DBInfo.Port,
+			h.conf.DBInfo.DataBase)
+		err = h.sm.GetSession(c).SetDSN(str)
+		if (err != nil) {
+			h.logger.Errorf("set dsn error: %s", err.Error())
+		}
+		h.logger.Infof("dsn is nil, init dsn: %s", str)
+	}
+	
 	if useMatches := useRe.FindStringSubmatch(query); len(useMatches) == 2 {
 		if dsnMatches := dsnRe.FindStringSubmatch(useMatches[1]); len(dsnMatches) == 2 {
 			err = h.sm.GetSession(c).SetDSN(dsnMatches[1])
@@ -83,6 +99,7 @@ func (h *Handler) ComQuery(
 			}
 		} else {
 			dsn := h.sm.GetSession(c).GetDSN()
+			
 			if dsn == nil {
 				err = fmt.Errorf("no dsn specified before the query:[%s], you can try restarting the mysql client", query)
 				return

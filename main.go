@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Orlion/hersql/config"
-	"github.com/Orlion/hersql/server"
+	"hersql/config"
+	"hersql/server"
 )
 
 var confFilename string

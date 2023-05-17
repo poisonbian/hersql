@@ -3,7 +3,7 @@ package log
 import (
 	"os"
 
-	"github.com/Orlion/hersql/config"
+	"hersql/config"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
