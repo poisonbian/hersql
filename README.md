@@ -51,10 +51,44 @@ SQL 错误 [1105] [HY000]: unknown error: Reader.parseBlockValueWithFirstByte re
 经过艰苦地定位，并没有找到原因，但是。。。莫名其妙地好了-____-!!!
 
 ## 使用方式
+### 部署ntunnel_mysql.php
+即项目中的_mysql.php 文件，部署至内网，或其他可以访问对应数据库的机器上。并保证其能够通过一个http地址进行访问
+
+验证：直接在浏览器中访问http地址，在页面中输入对应的数据库信息后，测试是否可以联通。
+
+### 准备hersql
 1. 安装go环境、下载代码
 
 2. 编译（也可以使用compile.sh，自动编译win/mac/linux多平台的执行文件）
 
-3. 运行：./hersql.exe -conf xxxconf.yml
+3. 配置conf文件，可以参照conf.yml.example
+
+4. 运行：./hersql.exe -conf xxxconf.yml
+
+5. 在navicat或者dbeaver等客户端软件中配置连接即可
+
+### 配置说明
+\# 数据库对应信息。这些信息会传给http代理，供其连接真正的数据库
+db_info:
+  ntunnel_url: http://test.navicat.com/ntunnel_mysql.php
+  host: xxdb.xx.com
+  port: 3306
+  database: a_default_db
+  user: username
+  password: password
+\# hersql启动的server信息。这里的user_name和user_password用于navicat中的配置
+server: 
+  protocol: tcp
+  address: 127.0.0.1:63306
+  version: 5.7.1
+  conn_read_timeout: 300000 # milliseconds
+  conn_write_timeout: 5000 # milliseconds
+  max_connections: 10
+  user_name: root
+  user_password: 123456
+\# 日志记录
+log:
+  info_log_filename: storage/log/info.log
+  error_log_filename: storage/log/error.log
 
 
