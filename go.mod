@@ -1,4 +1,4 @@
-module gitee.com/poisonbian/hersql
+module github.com/poisonbian/hersql
 
 go 1.15
 

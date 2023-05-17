@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"hersql/pkg/bytesx"
+	"github.com/poisonbian/hersql/pkg/bytesx"
 	"github.com/dolthub/vitess/go/sqltypes"
 	"github.com/dolthub/vitess/go/vt/proto/query"
 	"go.uber.org/zap"

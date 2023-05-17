@@ -3,8 +3,8 @@ package server
 import (
 	"time"
 
-	"hersql/config"
-	"hersql/log"
+	"github.com/poisonbian/hersql/config"
+	"github.com/poisonbian/hersql/log"
 	"github.com/dolthub/go-mysql-server/auth"
 	"github.com/dolthub/vitess/go/mysql"
 	"go.uber.org/zap"

@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"time"
 
-	"hersql/config"
-	"hersql/ntunnel"
+	"github.com/poisonbian/hersql/config"
+	"github.com/poisonbian/hersql/ntunnel"
 	"github.com/dolthub/vitess/go/mysql"
 	"github.com/dolthub/vitess/go/sqltypes"
 	"github.com/dolthub/vitess/go/vt/proto/query"

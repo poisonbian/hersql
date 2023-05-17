@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"hersql/config"
-	"hersql/server"
+	"github.com/poisonbian/hersql/config"
+	"github.com/poisonbian/hersql/server"
 )
 
 var confFilename string

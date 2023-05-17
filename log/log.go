@@ -3,7 +3,7 @@ package log
 import (
 	"os"
 
-	"hersql/config"
+	"github.com/poisonbian/hersql/config"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
