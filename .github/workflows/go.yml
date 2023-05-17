@@ -26,3 +26,11 @@ jobs:
         GOOS=windows GOARCH=amd64 go build -o hersql_win.exe;
         GOOS=darwin GOARCH=amd64 go build -o hersql_mac;
         GOOS=linux GOARCH=amd64 go build -o hersql_linux;
+    - name: Upload Build Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: artifacts
+        path: |
+          hersql_win.exe
+          hersql_mac
+          hersql_linux
