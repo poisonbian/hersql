@@ -68,27 +68,28 @@ SQL 错误 [1105] [HY000]: unknown error: Reader.parseBlockValueWithFirstByte re
 5. 在navicat或者dbeaver等客户端软件中配置连接即可
 
 ### 配置说明
-\# 数据库对应信息。这些信息会传给http代理，供其连接真正的数据库
-db_info:
-  ntunnel_url: http://test.navicat.com/ntunnel_mysql.php
-  host: xxdb.xx.com
-  port: 3306
-  database: a_default_db
-  user: username
-  password: password
-\# hersql启动的server信息。这里的user_name和user_password用于navicat中的配置
-server: 
-  protocol: tcp
-  address: 127.0.0.1:63306
-  version: 5.7.1
-  conn_read_timeout: 300000 # milliseconds
-  conn_write_timeout: 5000 # milliseconds
-  max_connections: 10
-  user_name: root
-  user_password: 123456
-\# 日志记录
-log:
-  info_log_filename: storage/log/info.log
-  error_log_filename: storage/log/error.log
-
+```
+    # 数据库对应信息。这些信息会传给http代理，供其连接真正的数据库
+    db_info:
+      ntunnel_url: http://test.navicat.com/ntunnel_mysql.php
+      host: xxdb.xx.com
+      port: 3306
+      database: a_default_db
+      user: username
+      password: password
+    # hersql启动的server信息。这里的user_name和user_password用于navicat中的配置
+    server: 
+      protocol: tcp
+      address: 127.0.0.1:63306
+      version: 5.7.1
+      conn_read_timeout: 300000 # milliseconds
+      conn_write_timeout: 5000 # milliseconds
+      max_connections: 10
+      user_name: root
+      user_password: 123456
+    # 日志记录
+    log:
+      info_log_filename: storage/log/info.log
+      error_log_filename: storage/log/error.log
+```
 
